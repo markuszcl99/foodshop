@@ -1,0 +1,6 @@
+# Project exclude paths
+/foodshop-api/target/
+/foodshop-common/target/
+/foodshop-mapper/target/
+/foodshop-pojo/target/
+/foodshop-service/target/
