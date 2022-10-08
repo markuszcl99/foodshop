@@ -4,12 +4,17 @@ import com.markus.pojo.Users;
 import com.markus.pojo.bo.UserBO;
 import com.markus.service.UserService;
 import com.markus.utils.CommonReturnResult;
+import com.markus.utils.CookieUtils;
+import com.markus.utils.JsonUtils;
 import com.markus.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author: markus
@@ -80,7 +85,9 @@ public class PassportController {
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     @PostMapping("/login")
-    public CommonReturnResult login(@RequestBody UserBO userBO) throws Exception {
+    public CommonReturnResult login(@RequestBody UserBO userBO,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws Exception {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         // 1. 用户名和密码不能为空
@@ -91,11 +98,21 @@ public class PassportController {
 
         // 2. 实现登录
         Users userResult = userService.queryUserForLogin(username, MD5Utils.getMD5Str(password));
-
         if (userResult == null) {
             return CommonReturnResult.errorMsg("用户名或密码不正确");
         }
+        setNullProperty(userResult);
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
         return CommonReturnResult.ok(userResult);
+    }
+
+    private void setNullProperty(Users userResult) {
+        userResult.setPassword(null);
+        userResult.setMobile(null);
+        userResult.setEmail(null);
+        userResult.setCreatedTime(null);
+        userResult.setUpdatedTime(null);
+        userResult.setBirthday(null);
     }
 
 }
