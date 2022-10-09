@@ -106,6 +106,15 @@ public class PassportController {
         return CommonReturnResult.ok(userResult);
     }
 
+    @ApiOperation(value = "用户退出", notes = "用户退出", httpMethod = "POST")
+    @PostMapping("/logout")
+    public CommonReturnResult logout(@RequestParam String userId,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
+        CookieUtils.deleteCookie(request, response, "user");
+        return CommonReturnResult.ok();
+    }
+
     private void setNullProperty(Users userResult) {
         userResult.setPassword(null);
         userResult.setMobile(null);
