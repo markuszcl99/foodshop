@@ -2,12 +2,17 @@ package com.markus.controller;
 
 import com.markus.enums.YesOrNo;
 import com.markus.pojo.Carousel;
+import com.markus.pojo.Category;
+import com.markus.pojo.vo.CategoryVO;
 import com.markus.service.CarouselService;
+import com.markus.service.CategoryService;
 import com.markus.utils.CommonReturnResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -31,10 +36,32 @@ public class IndexController {
     @Autowired
     private CarouselService carouselService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
     @GetMapping("/carousel")
     public CommonReturnResult carousel() {
         List<Carousel> result = carouselService.queryAll(YesOrNo.YES.type);
+        return CommonReturnResult.ok(result);
+    }
+
+    @ApiOperation(value = "获取首页一级分类列表", notes = "获取首页一级分类列表", httpMethod = "GET")
+    @GetMapping("/cats")
+    public CommonReturnResult cats() {
+        List<Category> result = categoryService.queryAllRootLevelCat();
+        return CommonReturnResult.ok(result);
+    }
+
+    @ApiOperation(value = "获取首页一级分类列表", notes = "获取首页一级分类列表", httpMethod = "GET")
+    @GetMapping("/subCat/{rootCatId}")
+    public CommonReturnResult subCat(
+            @ApiParam(name = "rootCatId",value = "一级分类ID",required = true)
+            @PathVariable Integer rootCatId){
+        if (rootCatId == null){
+            return CommonReturnResult.errorMsg("分类不存在");
+        }
+        List<CategoryVO> result = categoryService.getSubCatList(rootCatId);
         return CommonReturnResult.ok(result);
     }
 }
