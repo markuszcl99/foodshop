@@ -13,7 +13,7 @@ public class NewItemVO {
     private Integer rootCatId;
     private String rootCatName;
     private String slogan;
-    private String catImg;
+    private String catImage;
     private String bgColor;
     private List<SimpleItemVO> simpleItemList;
 
@@ -41,12 +41,12 @@ public class NewItemVO {
         this.slogan = slogan;
     }
 
-    public String getCatImg() {
-        return catImg;
+    public String getCatImage() {
+        return catImage;
     }
 
-    public void setCatImg(String catImg) {
-        this.catImg = catImg;
+    public void setCatImage(String catImage) {
+        this.catImage = catImage;
     }
 
     public String getBgColor() {

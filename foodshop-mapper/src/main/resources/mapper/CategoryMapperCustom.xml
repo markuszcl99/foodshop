@@ -37,7 +37,7 @@
         <id column="rootCatId" property="rootCatId"/>
         <result column="rootCatName" property="rootCatName"/>
         <result column="slogan" property="slogan"/>
-        <result column="catImg" property="catImg"/>
+        <result column="catImage" property="catImage"/>
         <result column="bgColor" property="bgColor"/>
 
         <!--
@@ -57,7 +57,7 @@
             f.id as rootCatId,
             f.name as rootCatName,
             f.slogan as slogan,
-            f.cat_image as catImg,
+            f.cat_image as catImage,
             f.bg_color as bgColor,
             i.id as itemId,
             i.item_name as itemName,
