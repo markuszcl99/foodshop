@@ -51,7 +51,8 @@
             <result column="itemUrl" property="itemUrl"/>
         </collection>
     </resultMap>
-    <select id="getSixNewItemsLazy" resultMap="sixNewItemVO" parameterMap="Map">
+    <!--ParameterMap和ResultMap类似，设置入参字段映射，很少使用（不建议使用）一般使用parameterType直接将查询结果列值类型自动对应到java对象属性类型上，不再配置映射关系一一对应-->
+    <select id="getSixNewItemsLazy" resultMap="sixNewItemVO" parameterType="Map">
         SELECT
             f.id as rootCatId,
             f.name as rootCatName,
