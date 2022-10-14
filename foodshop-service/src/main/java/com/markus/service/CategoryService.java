@@ -3,6 +3,7 @@ package com.markus.service;
 import com.markus.pojo.Carousel;
 import com.markus.pojo.Category;
 import com.markus.pojo.vo.CategoryVO;
+import com.markus.pojo.vo.NewItemVO;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface CategoryService {
     public List<Category> queryAllRootLevelCat();
 
     public List<CategoryVO> getSubCatList(Integer rootCatId);
+
+    public List<NewItemVO> getSixNewItemsLazy(Integer rootCatId);
 }

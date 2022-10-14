@@ -4,6 +4,7 @@ import com.markus.enums.YesOrNo;
 import com.markus.pojo.Carousel;
 import com.markus.pojo.Category;
 import com.markus.pojo.vo.CategoryVO;
+import com.markus.pojo.vo.NewItemVO;
 import com.markus.service.CarouselService;
 import com.markus.service.CategoryService;
 import com.markus.utils.CommonReturnResult;
@@ -53,15 +54,27 @@ public class IndexController {
         return CommonReturnResult.ok(result);
     }
 
-    @ApiOperation(value = "获取首页一级分类列表", notes = "获取首页一级分类列表", httpMethod = "GET")
+    @ApiOperation(value = "获取首页二级分类列表", notes = "获取首页二级分类列表", httpMethod = "GET")
     @GetMapping("/subCat/{rootCatId}")
     public CommonReturnResult subCat(
-            @ApiParam(name = "rootCatId",value = "一级分类ID",required = true)
-            @PathVariable Integer rootCatId){
-        if (rootCatId == null){
+            @ApiParam(name = "rootCatId", value = "一级分类ID", required = true)
+            @PathVariable Integer rootCatId) {
+        if (rootCatId == null) {
             return CommonReturnResult.errorMsg("分类不存在");
         }
         List<CategoryVO> result = categoryService.getSubCatList(rootCatId);
+        return CommonReturnResult.ok(result);
+    }
+
+    @ApiOperation(value = "获取首页推荐分类栏最新的六个商品信息", notes = "获取首页推荐分类栏最新的六个商品信息", httpMethod = "GET")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public CommonReturnResult sixNewItems(
+            @ApiParam(name = "rootCatId", value = "一级分类ID", required = true)
+            @PathVariable Integer rootCatId) {
+        if (rootCatId == null) {
+            return CommonReturnResult.errorMsg("分类不存在");
+        }
+        List<NewItemVO> result = categoryService.getSixNewItemsLazy(rootCatId);
         return CommonReturnResult.ok(result);
     }
 }
