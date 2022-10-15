@@ -1,11 +1,11 @@
 package com.markus.controller;
 
-import com.markus.enums.YesOrNo;
 import com.markus.pojo.*;
-import com.markus.pojo.vo.CommentLevelCount;
+import com.markus.pojo.vo.CommentLevelCountVO;
 import com.markus.pojo.vo.ItemInfoVO;
 import com.markus.service.ItemService;
 import com.markus.utils.CommonReturnResult;
+import com.markus.utils.PagedGridResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,7 +25,7 @@ import java.util.List;
 @Api(value = "商品详情页接口", tags = {"用于商品详情页展示的相关接口"})
 @RestController
 @RequestMapping("items")
-public class ItemController {
+public class ItemController extends BaseController {
 
     @Autowired
     private ItemService itemService;
@@ -57,7 +57,31 @@ public class ItemController {
     public CommonReturnResult commentLevel(
             @ApiParam(name = "itemId", value = "商品ID", required = true)
             @RequestParam String itemId) {
-        CommentLevelCount commentLevelCount = itemService.queryCommentLevelCount(itemId);
-        return CommonReturnResult.ok(commentLevelCount);
+        CommentLevelCountVO commentLevelCountVO = itemService.queryCommentLevelCount(itemId);
+        return CommonReturnResult.ok(commentLevelCountVO);
+    }
+
+    @ApiOperation(value = "商品评价内容展示", notes = "商品评价内容展示", httpMethod = "GET")
+    @GetMapping(value = "/comments")
+    public CommonReturnResult comments(
+            @ApiParam(name = "itemId", value = "商品ID", required = true)
+            @RequestParam String itemId,
+            @ApiParam(name = "level", value = "评价等级", required = false)
+            @RequestParam Integer level,
+            @ApiParam(name = "page", value = "要查询的页码", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "一页显示的记录数", required = false)
+            @RequestParam Integer pageSize) {
+        if (StringUtils.isBlank(itemId)) {
+            return CommonReturnResult.errorMsg("商品ID不能为空");
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = CURRENT_PAGE_RECORD_COUNTS;
+        }
+        PagedGridResult result = itemService.queryCommentContentVO(itemId, level, page, pageSize);
+        return CommonReturnResult.ok(result);
     }
 }

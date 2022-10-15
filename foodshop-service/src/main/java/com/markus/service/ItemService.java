@@ -4,7 +4,8 @@ import com.markus.pojo.Items;
 import com.markus.pojo.ItemsImg;
 import com.markus.pojo.ItemsParam;
 import com.markus.pojo.ItemsSpec;
-import com.markus.pojo.vo.CommentLevelCount;
+import com.markus.pojo.vo.CommentLevelCountVO;
+import com.markus.utils.PagedGridResult;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public interface ItemService {
 
     /**
      * 根据id查询商品规格
+     *
      * @param itemId
      * @return
      */
@@ -41,6 +43,7 @@ public interface ItemService {
 
     /**
      * 根据id查询商品图片
+     *
      * @param itemId
      * @return
      */
@@ -48,8 +51,19 @@ public interface ItemService {
 
     /**
      * 查询各评价等级的评价数量
+     *
      * @param itemId
      * @return
      */
-    public CommentLevelCount queryCommentLevelCount(String itemId);
+    public CommentLevelCountVO queryCommentLevelCount(String itemId);
+
+    /**
+     *
+     * @param itemId
+     * @param commentLevel
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public PagedGridResult queryCommentContentVO(String itemId, Integer commentLevel, Integer page, Integer pageSize);
 }

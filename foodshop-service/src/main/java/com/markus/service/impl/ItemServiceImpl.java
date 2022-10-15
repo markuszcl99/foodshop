@@ -1,17 +1,23 @@
 package com.markus.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.markus.enums.CommentLevel;
 import com.markus.mapper.*;
 import com.markus.pojo.*;
-import com.markus.pojo.vo.CommentLevelCount;
+import com.markus.pojo.vo.CommentLevelCountVO;
+import com.markus.pojo.vo.ItemCommentContentVO;
 import com.markus.service.ItemService;
+import com.markus.utils.PagedGridResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: markus
@@ -33,6 +39,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemsSpecMapper itemsSpecMapper;
     @Autowired
     private ItemsCommentsMapper itemsCommentsMapper;
+    @Autowired
+    private ItemsCommentsMapperCustom itemsCommentsMapperCustom;
 
     @Override
     public Items queryItemById(String itemId) {
@@ -65,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public CommentLevelCount queryCommentLevelCount(String itemId) {
+    public CommentLevelCountVO queryCommentLevelCount(String itemId) {
         Example example = new Example(ItemsComments.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("itemId", itemId);
@@ -73,7 +81,18 @@ public class ItemServiceImpl implements ItemService {
         return constructCommentLevelCount(itemsCommentsList);
     }
 
-    private CommentLevelCount constructCommentLevelCount(List<ItemsComments> itemsCommentsList) {
+    @Override
+    public PagedGridResult queryCommentContentVO(String itemId, Integer commentLevel, Integer page, Integer pageSize) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("itemId", itemId);
+        paramMap.put("commentLevel", commentLevel);
+
+        PageHelper.startPage(page, pageSize);
+        List<ItemCommentContentVO> list = itemsCommentsMapperCustom.getItemCommentsList(paramMap);
+        return PagedGridResult.getPagedGridResult(list, page);
+    }
+
+    private CommentLevelCountVO constructCommentLevelCount(List<ItemsComments> itemsCommentsList) {
         int totalCounts = 0, goodCounts = 0, normalCounts = 0, badCounts = 0;
         for (ItemsComments itemsComments : itemsCommentsList) {
             int level = itemsComments.getCommentLevel();
@@ -90,11 +109,11 @@ public class ItemServiceImpl implements ItemService {
             }
         }
         totalCounts = goodCounts + normalCounts + badCounts;
-        CommentLevelCount commentLevelCount = new CommentLevelCount();
-        commentLevelCount.setTotalCounts(totalCounts);
-        commentLevelCount.setGoodCounts(goodCounts);
-        commentLevelCount.setNormalCounts(normalCounts);
-        commentLevelCount.setBadCounts(badCounts);
-        return commentLevelCount;
+        CommentLevelCountVO commentLevelCountVO = new CommentLevelCountVO();
+        commentLevelCountVO.setTotalCounts(totalCounts);
+        commentLevelCountVO.setGoodCounts(goodCounts);
+        commentLevelCountVO.setNormalCounts(normalCounts);
+        commentLevelCountVO.setBadCounts(badCounts);
+        return commentLevelCountVO;
     }
 }

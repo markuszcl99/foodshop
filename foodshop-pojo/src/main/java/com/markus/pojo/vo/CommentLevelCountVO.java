@@ -7,7 +7,7 @@ package com.markus.pojo.vo;
  * @Blog: http://markuszhang.com
  * It's my honor to share what I've learned with you!
  */
-public class CommentLevelCount {
+public class CommentLevelCountVO {
     private Integer totalCounts;
     private Integer goodCounts;
     private Integer normalCounts;
