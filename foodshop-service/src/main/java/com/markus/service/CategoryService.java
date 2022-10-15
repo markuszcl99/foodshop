@@ -21,7 +21,17 @@ public interface CategoryService {
      */
     public List<Category> queryAllRootLevelCat();
 
+    /**
+     * 查询二级品类信息
+     * @param rootCatId
+     * @return
+     */
     public List<CategoryVO> getSubCatList(Integer rootCatId);
 
+    /**
+     * 查询分类推荐商品信息
+     * @param rootCatId
+     * @return
+     */
     public List<NewItemVO> getSixNewItemsLazy(Integer rootCatId);
 }

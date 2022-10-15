@@ -42,10 +42,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.selectByExample(example);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
     public List<CategoryVO> getSubCatList(Integer rootCatId) {
         return categoryMapperCustom.getSubCatList(rootCatId);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<NewItemVO> getSixNewItemsLazy(Integer rootCatId) {
         Map<String, Object> paramMap = new HashMap<>();
