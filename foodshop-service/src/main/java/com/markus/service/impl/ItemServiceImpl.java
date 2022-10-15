@@ -8,6 +8,7 @@ import com.markus.pojo.*;
 import com.markus.pojo.vo.CommentLevelCountVO;
 import com.markus.pojo.vo.ItemCommentContentVO;
 import com.markus.service.ItemService;
+import com.markus.utils.DesensitizationUtil;
 import com.markus.utils.PagedGridResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: markus
@@ -89,6 +91,8 @@ public class ItemServiceImpl implements ItemService {
 
         PageHelper.startPage(page, pageSize);
         List<ItemCommentContentVO> list = itemsCommentsMapperCustom.getItemCommentsList(paramMap);
+        // 脱敏处理
+        list.stream().forEach(vo -> vo.setNickname(DesensitizationUtil.commonDisplay(vo.getNickname())));
         return PagedGridResult.getPagedGridResult(list, page);
     }
 
