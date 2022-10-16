@@ -1,7 +1,6 @@
 package com.markus.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.markus.enums.CommentLevel;
 import com.markus.mapper.*;
 import com.markus.pojo.*;
@@ -19,7 +18,6 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author: markus
@@ -42,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemsCommentsMapper itemsCommentsMapper;
     @Autowired
-    private ItemsCommentsMapperCustom itemsCommentsMapperCustom;
+    private ItemsMapperCustom itemsMapperCustom;
 
     @Override
     public Items queryItemById(String itemId) {
@@ -90,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         paramMap.put("commentLevel", commentLevel);
 
         PageHelper.startPage(page, pageSize);
-        List<ItemCommentContentVO> list = itemsCommentsMapperCustom.getItemCommentsList(paramMap);
+        List<ItemCommentContentVO> list = itemsMapperCustom.getItemCommentsList(paramMap);
         // 脱敏处理
         list.stream().forEach(vo -> vo.setNickname(DesensitizationUtil.commonDisplay(vo.getNickname())));
         return PagedGridResult.getPagedGridResult(list, page);
