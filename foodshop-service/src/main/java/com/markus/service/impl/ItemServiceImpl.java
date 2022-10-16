@@ -8,6 +8,7 @@ import com.markus.pojo.*;
 import com.markus.pojo.vo.CommentLevelCountVO;
 import com.markus.pojo.vo.ItemCommentContentVO;
 import com.markus.pojo.vo.SearchItemVO;
+import com.markus.pojo.vo.ShopCartVO;
 import com.markus.service.ItemService;
 import com.markus.utils.DesensitizationUtil;
 import com.markus.utils.PagedGridResult;
@@ -17,9 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: markus
@@ -120,6 +119,14 @@ public class ItemServiceImpl implements ItemService {
         PageHelper.startPage(page, pageSize);
         List<SearchItemVO> list = itemsMapperCustom.searchItemByKeyword(paramMap);
         return PagedGridResult.getPagedGridResult(list, page);
+    }
+
+    @Override
+    public List<ShopCartVO> queryShopCartItemsBySpecId(String specIds) {
+        String[] specIdArr = specIds.split(",");
+        List<String> specIdList = new ArrayList<>();
+        Collections.addAll(specIdList, specIdArr);
+        return itemsMapperCustom.getItemInfoBySpecIds(specIdList);
     }
 
     private CommentLevelCountVO constructCommentLevelCount(List<ItemsComments> itemsCommentsList) {

@@ -89,4 +89,35 @@
             </otherwise>
         </choose>
     </select>
+
+    <resultMap id="shopcartVO" type="com.markus.pojo.vo.ShopCartVO">
+        <result column="itemId" property="itemId"/>
+        <result column="itemImgUrl" property="itemImgUrl"/>
+        <result column="itemName" property="itemName"/>
+        <result column="specId" property="specId"/>
+        <result column="specName" property="specName"/>
+        <result column="priceDiscount" property="priceDiscount"/>
+        <result column="priceNormal" property="priceNormal"/>
+    </resultMap>
+    <select id="getItemInfoBySpecIds" parameterType="List" resultMap="shopcartVO">
+        SELECT
+            cart_i.id AS itemId,
+            cart_ii.url AS itemImgUrl,
+            cart_i.item_name AS itemName,
+            cart_is.id AS specId,
+            cart_is.`name` AS specName,
+            cart_is.price_discount AS priceDiscount,
+            cart_is.price_normal AS priceNormal
+        FROM
+            items_spec AS cart_is
+                LEFT JOIN items AS cart_i ON cart_is.item_id = cart_i.id
+                LEFT JOIN items_img AS cart_ii ON cart_i.id = cart_ii.item_id
+        WHERE
+                cart_ii.is_main = 1
+          AND
+                cart_is.id IN
+            <foreach collection="paramList" index="index" item="specId" open="(" close=")" separator=",">
+                #{specId}
+            </foreach>
+    </select>
 </mapper>

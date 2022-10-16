@@ -3,6 +3,7 @@ package com.markus.controller;
 import com.markus.pojo.*;
 import com.markus.pojo.vo.CommentLevelCountVO;
 import com.markus.pojo.vo.ItemInfoVO;
+import com.markus.pojo.vo.ShopCartVO;
 import com.markus.service.ItemService;
 import com.markus.utils.CommonReturnResult;
 import com.markus.utils.PagedGridResult;
@@ -130,6 +131,18 @@ public class ItemController extends BaseController {
             pageSize = SEARCH_PAGE_RECORD_COUNTS;
         }
         PagedGridResult result = itemService.querySearchItemVO(catId, sort, page, pageSize);
+        return CommonReturnResult.ok(result);
+    }
+
+    @ApiOperation(value = "获取购物车最新商品信息", notes = "获取购物车最新商品信息", httpMethod = "GET")
+    @GetMapping(value = "/refresh")
+    public CommonReturnResult refresh(
+            @ApiParam(name = "itemSpecIds", value = "商品规格id集合字符串", required = true)
+            @RequestParam String itemSpecIds) {
+        if (StringUtils.isBlank(itemSpecIds)) {
+            return CommonReturnResult.errorMsg("");
+        }
+        List<ShopCartVO> result = itemService.queryShopCartItemsBySpecId(itemSpecIds);
         return CommonReturnResult.ok(result);
     }
 }
