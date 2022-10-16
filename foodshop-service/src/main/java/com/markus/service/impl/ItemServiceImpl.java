@@ -2,10 +2,12 @@ package com.markus.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.markus.enums.CommentLevel;
+import com.markus.enums.SearchItemSortField;
 import com.markus.mapper.*;
 import com.markus.pojo.*;
 import com.markus.pojo.vo.CommentLevelCountVO;
 import com.markus.pojo.vo.ItemCommentContentVO;
+import com.markus.pojo.vo.SearchItemVO;
 import com.markus.service.ItemService;
 import com.markus.utils.DesensitizationUtil;
 import com.markus.utils.PagedGridResult;
@@ -91,6 +93,32 @@ public class ItemServiceImpl implements ItemService {
         List<ItemCommentContentVO> list = itemsMapperCustom.getItemCommentsList(paramMap);
         // 脱敏处理
         list.stream().forEach(vo -> vo.setNickname(DesensitizationUtil.commonDisplay(vo.getNickname())));
+        return PagedGridResult.getPagedGridResult(list, page);
+    }
+
+    @Override
+    public PagedGridResult querySearchItemVO(String keywords, String sort, Integer page, Integer pageSize) {
+        SearchItemSortField searchItemSortField = SearchItemSortField.getSearchItemSortField(sort);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("keywords", keywords);
+        paramMap.put("sortField", searchItemSortField.backEndSortField);
+        paramMap.put("isDesc", searchItemSortField.isDesc);
+
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemVO> list = itemsMapperCustom.searchItemByKeyword(paramMap);
+        return PagedGridResult.getPagedGridResult(list, page);
+    }
+
+    @Override
+    public PagedGridResult querySearchItemVO(Integer catId, String sort, Integer page, Integer pageSize) {
+        SearchItemSortField searchItemSortField = SearchItemSortField.getSearchItemSortField(sort);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("catId", catId);
+        paramMap.put("sortField", searchItemSortField.backEndSortField);
+        paramMap.put("isDesc", searchItemSortField.isDesc);
+
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemVO> list = itemsMapperCustom.searchItemByKeyword(paramMap);
         return PagedGridResult.getPagedGridResult(list, page);
     }
 

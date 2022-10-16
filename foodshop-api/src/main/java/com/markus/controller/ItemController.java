@@ -84,4 +84,52 @@ public class ItemController extends BaseController {
         PagedGridResult result = itemService.queryCommentContentVO(itemId, level, page, pageSize);
         return CommonReturnResult.ok(result);
     }
+
+    @ApiOperation(value = "商品关键词搜索", notes = "商品关键词搜索", httpMethod = "GET")
+    @GetMapping(value = "/search")
+    public CommonReturnResult search(
+            @ApiParam(name = "keywords", value = "关键词", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "排序方式", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "要查询的页码", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "一页显示的记录数", required = false)
+            @RequestParam Integer pageSize) {
+        if (StringUtils.isBlank(keywords)) {
+            return CommonReturnResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = SEARCH_PAGE_RECORD_COUNTS;
+        }
+        PagedGridResult result = itemService.querySearchItemVO(keywords, sort, page, pageSize);
+        return CommonReturnResult.ok(result);
+    }
+
+    @ApiOperation(value = "商品分类搜索", notes = "商品分类搜索", httpMethod = "GET")
+    @GetMapping(value = "/catItems")
+    public CommonReturnResult catItems(
+            @ApiParam(name = "catId", value = "分类ID", required = true)
+            @RequestParam Integer catId,
+            @ApiParam(name = "sort", value = "排序方式", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "要查询的页码", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "一页显示的记录数", required = false)
+            @RequestParam Integer pageSize) {
+        if (catId == null) {
+            return CommonReturnResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = SEARCH_PAGE_RECORD_COUNTS;
+        }
+        PagedGridResult result = itemService.querySearchItemVO(catId, sort, page, pageSize);
+        return CommonReturnResult.ok(result);
+    }
 }

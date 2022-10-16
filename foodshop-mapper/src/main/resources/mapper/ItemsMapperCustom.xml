@@ -25,4 +25,68 @@
             AND comment_level = #{paramMap.commentLevel}
         </if>
     </select>
+
+    <resultMap id="searchItemVO" type="com.markus.pojo.vo.SearchItemVO">
+        <result column="itemId" property="itemId"/>
+        <result column="itemName" property="itemName"/>
+        <result column="imgUrl" property="imgUrl"/>
+        <result column="price" property="price"/>
+        <result column="sellCounts" property="sellCounts"/>
+    </resultMap>
+
+    <select id="searchItemByKeyword" parameterType="Map" resultMap="searchItemVO">
+        SELECT
+            i.id AS itemId,
+            i.item_name AS itemName,
+            ii.url AS imgUrl,
+            tempSpec.price_discount AS price,
+            i.sell_counts AS sellCounts
+        FROM
+            items AS i
+                LEFT JOIN items_img AS ii ON i.id = ii.item_id
+                LEFT JOIN (
+                SELECT item_id,MIN( price_discount ) AS price_discount FROM items_spec GROUP BY item_id) tempSpec ON i.id = tempSpec.item_id
+        WHERE
+            ii.is_main = 1
+            <if test="paramMap.keywords != null and paramMap.keywords != '' ">
+                AND i.item_name LIKE '%${paramMap.keywords}%'
+            </if>
+        order by
+        <choose>
+            <when test="paramMap.isDesc == true">
+                ${paramMap.sortField} desc
+            </when>
+            <otherwise>
+                ${paramMap.sortField} asc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="searchItemByCatId" parameterType="Map" resultMap="searchItemVO">
+        SELECT
+        i.id AS itemId,
+        i.item_name AS itemName,
+        ii.url AS imgUrl,
+        tempSpec.price_discount AS price,
+        i.sell_counts AS sellCounts
+        FROM
+        items AS i
+        LEFT JOIN items_img AS ii ON i.id = ii.item_id
+        LEFT JOIN (
+        SELECT item_id,MIN( price_discount ) AS price_discount FROM items_spec GROUP BY item_id) tempSpec ON i.id = tempSpec.item_id
+        WHERE
+        ii.is_main = 1
+        <if test="paramMap.keywords != null and paramMap.keywords != '' ">
+            AND i.item_name LIKE '%${paramMap.catId}%'
+        </if>
+        order by
+        <choose>
+            <when test="paramMap.isDesc == true">
+                ${paramMap.sortField} desc
+            </when>
+            <otherwise>
+                ${paramMap.sortField} asc
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

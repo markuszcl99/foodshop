@@ -9,4 +9,5 @@ package com.markus.controller;
  */
 public class BaseController {
     public final static int CURRENT_PAGE_RECORD_COUNTS =10;
+    public final static int SEARCH_PAGE_RECORD_COUNTS =10;
 }
